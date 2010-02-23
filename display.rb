@@ -1,12 +1,12 @@
-require 'particle.rb'
+require 'mass.rb'
 
 class Display < Processing::App
 
-  attr_accessor :particles, :wells
+  attr_accessor :comets, :wells
 
   def setup
     smooth
-    @particles = [Particle.new(300,300,100), Particle.new(500,500,100,0,-1)]
+    @comets = [Mass.new(300,300,100), Mass.new(500,500,100, :y_speed => -1)]
     @wells = []
     @score = 0
     @playing = true
@@ -32,22 +32,22 @@ class Display < Processing::App
     text @score, 10, 20
     no_stroke
     
-    @particles.each do |p|
+    @comets.each do |p|
       ellipse p.x, p.y, Math.sqrt(p.mass)/2, Math.sqrt(p.mass)/2
-      p.apply_gravity_from(@particles - [p] + @wells.map {|w|w.particle})
+      p.apply_gravity_from(@comets - [p] + @wells.map {|w|w.mass})
     end
     
-    @particles.each {|p| p.step! }
+    @comets.each {|p| p.step! }
     
     fill 0, 0, 128
     @wells.each do |w|
-      ellipse w.particle.x, w.particle.y, 10, 10
+      ellipse w.mass.x, w.mass.y, 10, 10
     end
     
     @wells.reject! {|w| w.exp < Time.now }
-    @particles.reject! {|p| p.x > width + 10 || p.x < -10 || p.y > height + 10 || p.y < -10 }
+    @comets.reject! {|p| p.x > width + 10 || p.x < -10 || p.y > height + 10 || p.y < -10 }
     
-    @score +=  @particles.size - 1 if @playing
+    @score +=  @comets.size - 1 if @playing
     
     unless @playing
       background 0
@@ -55,7 +55,7 @@ class Display < Processing::App
       text @score, 200, 300
     end
     
-    @playing = false if @particles.size == 0
+    @playing = false if @comets.size == 0
   end
   
   def mouse_pressed
@@ -64,17 +64,17 @@ class Display < Processing::App
   end
   
   def key_pressed
-    @particles << Particle.new(mouse_x, mouse_y, rand(200)+50)
+    @comets << Mass.new(mouse_x, mouse_y, rand(200)+50)
     @score -= 1000
   end
   
 end
 
 class Well
-  attr_accessor :particle, :exp
-  def initialize(x,y)
+  attr_accessor :mass, :exp
+  def initialize(x, y)
     @exp = Time.now + 5
-    @particle = Particle.new(x,y, 100)
+    @mass = Mass.new(x, y, 100)
   end
 end
 
