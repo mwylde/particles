@@ -2,24 +2,21 @@ module CollisionDetector
   module Posteriori    
     def detect_and_correct_collisions(objs)
       collision_happened = false
-      objs.each do |a|
-        (objs - [a]).each do |b|
+      for a in objs
+        for b in objs
           collision_dist = a.radius + b.radius
           d = a.distance_to(b)
-          if collision_dist > d
+          if collision_dist > d && a != b
             collision_happened = true
             dx = a.x - b.x + 0.0
             dy = a.y - b.y + 0.0
             
             # Time delta from actual point of contact
-            dt = (a.radius + b.radius - d) * d / ((b.xv*dx + b.yv*dy) - (a.xv*dx + a.yv*dy))
+            dt = (collision_dist - d) * d / ((b.xv*dx + b.yv*dy) - (a.xv*dx + a.yv*dy))
             
             # Move back to point of contact
-            
-            a.x -= a.xv * dt
-            a.y -= a.yv * dt
-            b.x -= b.xv * dt
-            b.y -= b.yv * dt
+            a.step!(-dt)
+            b.step!(-dt)
                                     
             # Recalculate
             dx = b.x - a.x
@@ -48,10 +45,8 @@ module CollisionDetector
       			b.yv = vaP2*ay + vb2*ax
       			      			
       			# Move forward in time
-      			a.x += a.xv * dt
-      			a.y += a.yv * dt
-      			b.x += b.xv * dt
-      			b.y += b.yv * dt
+            a.step!(dt)
+            b.step!(dt)      			
           end
         end
       end
