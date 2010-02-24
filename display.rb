@@ -15,7 +15,7 @@ class Display < Processing::App
     @playing = true
     ellipse_mode CENTER
     
-    frame_rate 3
+    frame_rate 60
     textFont createFont("FFScala", 16)
     
     background 0
@@ -35,14 +35,15 @@ class Display < Processing::App
     text @score, 10, 20
     no_stroke
     
+    detect_and_correct_collisions(@comets)
+    
     @comets.each do |p|
       ellipse p.x, p.y, Math.sqrt(p.mass)/2, Math.sqrt(p.mass)/2
       p.apply_gravity_from(@comets - [p] + @wells.map {|w|w.mass})
     end
     
     @comets.each {|p| p.step! }
-    detect_and_correct_collisions(@comets)
-    
+        
     fill 0, 0, 128
     @wells.each do |w|
       ellipse w.mass.x, w.mass.y, 10, 10

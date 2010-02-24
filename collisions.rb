@@ -14,7 +14,7 @@ class Collisions < Processing::App
      [111,120],[132,120],[153,120],[122,140],[144,140],[133,160]].each do |x,y|
           @comets << Mass.new(x,y,100,:radius => 10)
         end
-        @comets << Mass.new(130, 400, 100, :radius => 10, :y_speed => -4)
+        @comets << Mass.new(130, 400, 3000, :radius => 10, :y_speed => -4)
     
     # 1.upto(30) do |i|
     #      @comets << Mass.new(100 + (22*i), width/2, 100, :radius => 10)
@@ -33,7 +33,7 @@ class Collisions < Processing::App
     #   ]
     ellipse_mode CENTER
     
-    frame_rate 20
+    frame_rate 30
     textFont createFont("FFScala", 16)
   end
   
