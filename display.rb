@@ -1,6 +1,9 @@
 require 'mass.rb'
+require 'collision_detector.rb'
+
 
 class Display < Processing::App
+  include CollisionDetector::Posteriori
 
   attr_accessor :comets, :wells
 
@@ -38,6 +41,7 @@ class Display < Processing::App
     end
     
     @comets.each {|p| p.step! }
+    detect_and_correct_collisions(@comets)
     
     fill 0, 0, 128
     @wells.each do |w|

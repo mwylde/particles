@@ -8,9 +8,12 @@ class Particle
     @yv = settings[:y_speed] || 0
   end
   
-  def squared_distance_from(obj)
-    squared_distance_to(obj)
+  def distance_from(obj); distance_to(obj); end
+  def distance_to(obj)
+    Math.sqrt(squared_distance_to(obj))
   end
+  
+  def squared_distance_from(obj); squared_distance_to(obj); end
   def squared_distance_to(obj)
     ((x-obj.x)**2 + (y-obj.y)**2)
   end
