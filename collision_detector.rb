@@ -6,15 +6,20 @@ module CollisionDetector
           collision_dist = a.radius + b.radius
           d = a.distance_to(b)
           if collision_dist > d
-            dx = b.x - a.x + 0.0
-            dy = b.y - a.y + 0.0
+            puts "Current locations"
+            puts "A: (#{a.x}, #{a.y})"
+            puts "B: (#{b.x}, #{b.y})"
+            dx = a.x - b.x + 0.0
+            dy = a.y - b.y + 0.0
             
             # Our velocities relative to (dx, dy)
             va = (a.xv*dx + a.yv*dy) / d
             vb = (b.xv*dx + b.yv*dy) / d
+            puts "Relative velocities"
+            puts "#{va}, #{vb}"
             
-            # Time delta
-            dt = (a.radius + b.radius - d) / (va + vb)
+            # Time delta from actual point of contact
+            dt = (a.radius + b.radius - d) / (vb - va)
             puts "Time delta: #{dt}"
             
             # Move back to point of contact
@@ -25,9 +30,7 @@ module CollisionDetector
             puts "Moving back in time"
             puts "A: (#{a.x}, #{a.y})"
             puts "B: (#{b.x}, #{b.y})"
-            
-            Kernel.sleep(1)
-                        
+                                    
             # Recalculate
             dx = b.x - a.x
             dy = b.y - a.y

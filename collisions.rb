@@ -9,19 +9,19 @@ class Collisions < Processing::App
   def setup
     smooth
     @comets = []
-    # 25.times do
-    #   @comets << Mass.new(rand(width), rand(height), 100, 
-    #               :radius => 10,
-    #               :x_speed => 2,
-    #               :y_speed => 1) 
-    # end
-    @comets = [
-        Mass.new(width/2, height/2, 100, :radius => 10),
-        Mass.new(width/4, height/2, 100, :radius => 10, :x_speed => 2)
-      ]
+    25.times do
+      @comets << Mass.new(rand(width), rand(height), 100, 
+                  :radius => 10,
+                  :x_speed => 2,
+                  :y_speed => 3) 
+    end
+    # @comets = [
+    #     Mass.new(width/2, height/2, 100, :radius => 10, :x_speed => -4),
+    #     Mass.new(width/4, height/2, 100, :radius => 10, :x_speed => 0)
+    #   ]
     ellipse_mode CENTER
     
-    frame_rate 10
+    frame_rate 20
     textFont createFont("FFScala", 16)
   end
   
