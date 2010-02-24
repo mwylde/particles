@@ -1,11 +1,13 @@
 module CollisionDetector
   module Posteriori
     def detect_and_correct_collisions(objs)
+      collision_happened = false
       objs.each do |a|
         (objs - [a]).each do |b|
           collision_dist = a.radius + b.radius
           d = a.distance_to(b)
           if collision_dist > d
+            collision_happened = true
             puts "Current locations"
             puts "A: (#{a.x}, #{a.y})"
             puts "B: (#{b.x}, #{b.y})"
@@ -58,7 +60,7 @@ module CollisionDetector
       			a.yv = vaP1*ay + vb1*ax
       			b.xv = vaP2*ax - vb2*ay
       			b.yv = vaP2*ay + vb2*ax
-      			
+      			      			
       			# Move forward in time
       			a.x += a.xv * dt
       			a.y += a.yv * dt
@@ -73,6 +75,7 @@ module CollisionDetector
           end
         end
       end
+      detect_and_correct_collisions(objs) if collision_happened
     end
   end
 end
