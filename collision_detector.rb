@@ -3,34 +3,41 @@ module CollisionDetector
     def detect_and_correct_collisions(objs)
       objs.each do |a|
         (objs - [a]).each do |b|
-          
           collision_dist = a.radius + b.radius
-          actual_dist = a.distance_to(b)
-          if collision_dist > actual_dist
-            dx = a.x - b.x
-            dy = a.y - b.y
+          d = a.distance_to(b)
+          if collision_dist > d
+            dx = b.x - a.x + 0.0
+            dy = b.y - a.y + 0.0
             
             # Our velocities relative to (dx, dy)
-            va = (a.xv*dx + a.yv*dy) / actual_dist
-            vb = (b.xv*dx + b.yv*dy) / actual_dist
+            va = (a.xv*dx + a.yv*dy) / d
+            vb = (b.xv*dx + b.yv*dy) / d
             
             # Time delta
-            dt = (a.radius + b.radius - actual_dist) / (va + vb)
+            dt = (a.radius + b.radius - d) / (va + vb)
+            puts "Time delta: #{dt}"
             
             # Move back to point of contact
-            a.x = a.x - a.xv * dt
-            a.y = a.y - a.yv * dt
-            b.x = b.x - b.xv * dt
-            b.y = b.y - b.yv * dt
+            a.x -= a.xv * dt
+            a.y -= a.yv * dt
+            b.x -= b.xv * dt
+            b.y -= b.yv * dt
+            puts "Moving back in time"
+            puts "A: (#{a.x}, #{a.y})"
+            puts "B: (#{b.x}, #{b.y})"
             
+            Kernel.sleep(1)
+                        
             # Recalculate
             dx = b.x - a.x
             dy = b.y - a.y
             d = a.distance_to(b)
+            puts "New distance: #{d}"
             
             # Unit vector in the direction of the collision
             ax = dx/d
             ay = dy/d
+            puts "Unit vector: #{ax}, #{ay}"
             
             # Project velocities along unit vector
             va1 =  a.xv * ax + a.yv * ay
@@ -39,7 +46,7 @@ module CollisionDetector
             vb2 = -b.xv * ay + b.yv * ax
             
             # New velocities
-            ed = 0.98
+            ed = 1.0
             vaP1 = va1 + (1 + ed) * (va2 - va1) / (1 + a.mass/b.mass)
             vaP2 = va2 + (1 + ed) * (va1 - va2) / (1 + b.mass/a.mass)
             
@@ -54,6 +61,12 @@ module CollisionDetector
       			a.y += a.yv * dt
       			b.x += b.xv * dt
       			b.y += b.yv * dt
+      			
+      			puts "Correcting positions."
+      			puts "A: (#{a.x}, #{a.y})"
+            puts "B: (#{b.x}, #{b.y})"
+            
+            puts
           end
         end
       end

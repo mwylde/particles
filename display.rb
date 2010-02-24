@@ -15,7 +15,7 @@ class Display < Processing::App
     @playing = true
     ellipse_mode CENTER
     
-    frame_rate 60
+    frame_rate 3
     textFont createFont("FFScala", 16)
     
     background 0

@@ -8,11 +8,20 @@ class Collisions < Processing::App
 
   def setup
     smooth
-    @comets = [Mass.new(width / 2, height / 2, 100, :radius => 20),
-                Mass.new(3 * width / 4 ,10 +  height / 2 , 200, :radius => 20, :x_speed => -1)]
+    @comets = []
+    # 25.times do
+    #   @comets << Mass.new(rand(width), rand(height), 100, 
+    #               :radius => 10,
+    #               :x_speed => 2,
+    #               :y_speed => 1) 
+    # end
+    @comets = [
+        Mass.new(width/2, height/2, 100, :radius => 10),
+        Mass.new(width/4, height/2, 100, :radius => 10, :x_speed => 2)
+      ]
     ellipse_mode CENTER
     
-    frame_rate 30
+    frame_rate 10
     textFont createFont("FFScala", 16)
   end
   
@@ -22,7 +31,18 @@ class Collisions < Processing::App
     
     no_stroke
     
-    @comets.each {|p| p.step! }
+    @comets.each do |p|
+      p.step!
+      if p.x <= 0 || p.x >= width
+        p.xv *= -1
+        p.x = [[1.0, p.x].max, width-1.0].min
+      end
+      if p.y <= 0 || p.y >= height
+        p.yv *= -1 
+        p.y = [[1.0, p.y].max, height-1.0].min
+      end
+    end
+    
     detect_and_correct_collisions(@comets)
     
     @comets.each do |p|
@@ -32,6 +52,7 @@ class Collisions < Processing::App
   
   def mouse_clicked
     setup
+    #@comets << Mass.new(mouse_x, mouse_y, 100, :radius => 10, :x_speed => 3, :y_speed => 3)
   end
   
 end
