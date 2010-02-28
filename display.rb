@@ -35,7 +35,7 @@ class Display < Processing::App
     text @score, 10, 20
     no_stroke
     
-    detect_and_correct_collisions(@comets)
+    #detect_and_correct_collisions(@comets)
     
     @comets.each do |p|
       ellipse p.x, p.y, Math.sqrt(p.mass)/2, Math.sqrt(p.mass)/2

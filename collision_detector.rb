@@ -17,6 +17,12 @@ module CollisionDetector
             # Move back to point of contact
             a.step!(-dt)
             b.step!(-dt)
+            
+            #Will sez: try replacing the previous two blocks with a check if velocities are at all
+            #in the direction of the collision (i.e., objects moving away from or tangentially to
+            #each other aren't colliding)
+            #since the "move back to point of contact" step will definitely break conservation of all sorts
+            #of things, especially for rapidly-moving objects which intersect deeply. 
                                     
             # Recalculate
             dx = b.x - a.x
@@ -43,6 +49,9 @@ module CollisionDetector
       			a.yv = vaP1*ay + vb1*ax
       			b.xv = vaP2*ax - vb2*ay
       			b.yv = vaP2*ay + vb2*ax
+      			
+      			#Will sez: previous three blocks are definitely redundant somehow
+      			#and this is where the "collision" happens, so should get factored out
       			      			
       			# Move forward in time
             a.step!(dt)
