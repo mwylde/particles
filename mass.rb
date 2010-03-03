@@ -22,11 +22,9 @@ class Mass < Particle
       end
       
       acceleration = ((obj.mass * @@G) / sqrd)
-      
-      theta = Math.atan((dy/dx).abs)      
-      
-      @xv = @xv + acceleration * Math.cos(theta) * (0 <=> dx) # x<=>y is x == y ? 0 : (x > y ? 1 : -1)
-      @yv = @yv + acceleration * Math.sin(theta) * (0 <=> dy) # so this is the oppposite sign of the argument
+            
+      @xv = @xv + acceleration * -dx / Math.sqrt(sqrd) # x<=>y is x == y ? 0 : (x > y ? 1 : -1)
+      @yv = @yv + acceleration * -dy / Math.sqrt(sqrd) # so this is the oppposite sign of the argument
     end
   end
   
