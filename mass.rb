@@ -23,8 +23,8 @@ class Mass < Particle
       
       acceleration = ((obj.mass * @@G) / sqrd)
             
-      @xv = @xv + acceleration * -dx / Math.sqrt(sqrd) # x<=>y is x == y ? 0 : (x > y ? 1 : -1)
-      @yv = @yv + acceleration * -dy / Math.sqrt(sqrd) # so this is the oppposite sign of the argument
+      @xv = @xv + acceleration * -dx / Math.sqrt(sqrd)
+      @yv = @yv + acceleration * -dy / Math.sqrt(sqrd)
     end
   end
   
