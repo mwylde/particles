@@ -1,5 +1,5 @@
 class Mass < Particle
-  @@G = 0.5
+  @@G = -0.15
   attr_accessor :mass, :radius
   
   def initialize(x, y, mss, settings = {})
@@ -8,21 +8,26 @@ class Mass < Particle
     @radius = settings[:radius] || 5
   end
   
-  def apply_gravity_from(objs)
+  def apply_gravity_from(objs, timestep = 1.0)
     objs.each do |obj|
       dx = @x-obj.x
-      return if dx == 0
       dy = @y-obj.y
-      sqrd = squared_distance_to(obj)
       
-      if sqrd < 1000
-        sqrd = 1000
-      end
+      d = [distance_to(obj), 20].max
+              
+      # Accel due to gravity = GM / d^2 = d / t^2
+      # We want change in velocity, which is d/t
+      # So multiply accel by t:
+      #   GM / d^2 * t = GMt / d^2    unit: d/t
+      # But we want the components of that velocity
+      # So multiply by dx/d and dy/d:
+      #   delta xv = GMt * dx / d^3
+      #   delta yv = GMt * dy / d^3
+      # Cache GMt / d^3:
+      hertz = (obj.mass * timestep * @@G) / d**3
       
-      acceleration = ((obj.mass * @@G) / sqrd)
-            
-      @xv = @xv + acceleration * -dx / Math.sqrt(sqrd)
-      @yv = @yv + acceleration * -dy / Math.sqrt(sqrd)
+      @xv = @xv + hertz * dx
+      @yv = @yv + hertz * dy
     end
   end
   

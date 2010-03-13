@@ -1,7 +1,7 @@
-class Well
-  attr_accessor :mass, :exp
+class Well < Mass
+  attr_accessor :exp
   def initialize(x, y)
-    @exp = Time.now + 5
-    @mass = Mass.new(x, y, 100)
+    @exp = Time.now + 1
+    super(x, y, 20)
   end
 end

@@ -12,6 +12,6 @@ end
 require_files ['/game/*.rb', '/graphics/*.rb', '/physics/particle', '/physics/*.rb', '/test/*.rb']
 
 case ARGV[0].strip
-  when 'game'     then Display.new :title => "Spaced", :width => 1000, :height => 800
-  when 'sandbox'  then Sandbox.new :title => "Spaced", :width => 400, :height => 400
+  when 'game'     then Game.new :title => "Critical Mass", :width => 1000, :height => 800
+  when 'sandbox'  then Sandbox.new :title => "Sandbox", :width => 400, :height => 400
 end
