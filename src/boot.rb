@@ -11,6 +11,9 @@ end
 
 require_files ['/game/*.rb', '/graphics/*.rb', '/physics/particle', '/physics/*.rb', '/test/*.rb']
 
+# Work around to enforce one window
+'< Processing::App' if false
+  
 case ARGV[0].strip
   when 'game'     then Game.new :title => "Critical Mass", :width => 1000, :height => 800
   when 'sandbox'  then Sandbox.new :title => "Sandbox", :width => 400, :height => 400
