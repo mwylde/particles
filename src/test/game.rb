@@ -1,7 +1,3 @@
-require 'mass.rb'
-require 'collision_detector.rb'
-
-
 class Display < Processing::App
   include CollisionDetector::Posteriori
 
@@ -16,6 +12,7 @@ class Display < Processing::App
     ellipse_mode CENTER
     
     frame_rate 60
+    @steps_per_frame = 2
     textFont createFont("FFScala", 16)
     
     background 0
@@ -74,13 +71,3 @@ class Display < Processing::App
   end
   
 end
-
-class Well
-  attr_accessor :mass, :exp
-  def initialize(x, y)
-    @exp = Time.now + 5
-    @mass = Mass.new(x, y, 100)
-  end
-end
-
-Display.new :title => "Spaced", :width => 1000, :height => 800

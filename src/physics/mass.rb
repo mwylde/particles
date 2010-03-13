@@ -1,5 +1,3 @@
-require 'particle'
-
 class Mass < Particle
   @@G = 0.5
   attr_accessor :mass, :radius

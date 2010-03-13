@@ -1,7 +1,4 @@
-require 'mass.rb'
-require 'collision_detector.rb'
-
-class Collisions < Processing::App
+class Sandbox < Processing::App
   include CollisionDetector::Posteriori
 
   attr_accessor :comets
@@ -88,5 +85,3 @@ class Collisions < Processing::App
   end
   
 end
-
-Collisions.new :title => "Spaced", :width => 400, :height => 400
