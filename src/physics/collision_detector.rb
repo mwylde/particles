@@ -20,25 +20,25 @@ module CollisionDetector
       
       b_new = [b.x, b.y]
       b_old = [b.x - b.xv, b.y - b.yv]
-    	
-    	return intersection?(a_old, a_new, b_old, b_new) 
-    	    || dist(a_new, b_new, b_old) < r_sum
-    	    || dist(a_old, b_new, b_old) < r_sum
-    	    || dist(b_new, a_new, a_old) < r_sum
-    	    || dist(b_old, a_new, a_old) < r_sum
+      
+      return intersection?(a_old, a_new, b_old, b_new) 
+          || dist(a_new, b_new, b_old) < r_sum
+          || dist(a_old, b_new, b_old) < r_sum
+          || dist(b_new, a_new, a_old) < r_sum
+          || dist(b_old, a_new, a_old) < r_sum
     end
 
     def intersection?(ao, an, bo, bn):
-    	denominator = (bn[1]-bo[1])*(an[0]-ao[0]) - (bn[0]-bo[0])*(an[1]-ao[1])
-    	
-    	u1=((bn[0]-bo[0])*(ao[1]-bo[1]) - (bn[1]-bo[1])*(ao[0]-bo[1]))/denominator
-    	return false if u1<0 || u1>1
+      denominator = (bn[1]-bo[1])*(an[0]-ao[0]) - (bn[0]-bo[0])*(an[1]-ao[1])
+      
+      u1=((bn[0]-bo[0])*(ao[1]-bo[1]) - (bn[1]-bo[1])*(ao[0]-bo[1]))/denominator
+      return false if u1<0 || u1>1
 
-    	u2=((an[0]-ao[0])*(ao[1]-bo[1]) - (an[1]-ao[1])*(ao[0]-bo[1]))/denominator
-    	return u2 >= 0 && u2 <= 1
-  	end
-  	
-  	def dist(pt, start, finish)  	  
+      u2=((an[0]-ao[0])*(ao[1]-bo[1]) - (an[1]-ao[1])*(ao[0]-bo[1]))/denominator
+      return u2 >= 0 && u2 <= 1
+    end
+    
+    def dist(pt, start, finish)     
       r_numerator = (pt[0]-start[0])*(finish[0]-start[0]) +
                     (pt[1]-start[1])*(finish[1]-start[1])
       
@@ -55,8 +55,8 @@ module CollisionDetector
           return [(pt[0]-start[0] )**2 + (pt[1]-start[1] )**2,
                   (pt[0]-finish[0])**2 + (pt[1]-finish[1])**2].min
       end
-	  end
-  	
+    end
+    
   end
   module Posteriori    
     def detect_and_correct_collisions(objs)
@@ -105,16 +105,16 @@ module CollisionDetector
             
             # Undo projection
             a.xv = vaP1*ax - vb1*ay
-      			a.yv = vaP1*ay + vb1*ax
-      			b.xv = vaP2*ax - vb2*ay
-      			b.yv = vaP2*ay + vb2*ax
-      			
-      			#Will sez: previous three blocks are definitely redundant somehow
-      			#and this is where the "collision" happens, so should get factored out
-      			      			
-      			# Move forward in time
+            a.yv = vaP1*ay + vb1*ax
+            b.xv = vaP2*ax - vb2*ay
+            b.yv = vaP2*ay + vb2*ax
+            
+            #Will sez: previous three blocks are definitely redundant somehow
+            #and this is where the "collision" happens, so should get factored out
+                        
+            # Move forward in time
             a.step!(dt)
-            b.step!(dt)      			
+            b.step!(dt)           
           end
         end
       end
