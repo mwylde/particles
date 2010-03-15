@@ -18,8 +18,16 @@ class Particle
     ((x-obj.x)**2 + (y-obj.y)**2)
   end
   
-  def step!
-    @x += @xv
-    @y += @yv
+  def step!(t = 1.0)
+    @x += @xv * t
+    @y += @yv * t
+  end
+  
+  def increase_velocities_by(amt)
+    reduce_velocities_by(-amt)
+  end
+  def reduce_velocities_by(amt)
+    @xv *= (1-amt)
+    @yv *= (1-amt)
   end
 end

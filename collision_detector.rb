@@ -1,43 +1,37 @@
 module CollisionDetector
-  module Posteriori
+  module Posteriori    
     def detect_and_correct_collisions(objs)
-      objs.each do |a|
-        (objs - [a]).each do |b|
+      collision_happened = false
+      for a in objs
+        for b in objs
           collision_dist = a.radius + b.radius
           d = a.distance_to(b)
-          if collision_dist > d
-            dx = b.x - a.x + 0.0
-            dy = b.y - a.y + 0.0
+          if collision_dist > d && a != b
+            collision_happened = true
+            dx = a.x - b.x + 0.0
+            dy = a.y - b.y + 0.0
             
-            # Our velocities relative to (dx, dy)
-            va = (a.xv*dx + a.yv*dy) / d
-            vb = (b.xv*dx + b.yv*dy) / d
-            
-            # Time delta
-            dt = (a.radius + b.radius - d) / (va + vb)
-            puts "Time delta: #{dt}"
+            # Time delta from actual point of contact
+            dt = (collision_dist - d) * d / ((b.xv*dx + b.yv*dy) - (a.xv*dx + a.yv*dy))
             
             # Move back to point of contact
-            a.x -= a.xv * dt
-            a.y -= a.yv * dt
-            b.x -= b.xv * dt
-            b.y -= b.yv * dt
-            puts "Moving back in time"
-            puts "A: (#{a.x}, #{a.y})"
-            puts "B: (#{b.x}, #{b.y})"
+            a.step!(-dt)
+            b.step!(-dt)
             
-            Kernel.sleep(1)
-                        
+            #Will sez: try replacing the previous two blocks with a check if velocities are at all
+            #in the direction of the collision (i.e., objects moving away from or tangentially to
+            #each other aren't colliding)
+            #since the "move back to point of contact" step will definitely break conservation of all sorts
+            #of things, especially for rapidly-moving objects which intersect deeply. 
+                                    
             # Recalculate
             dx = b.x - a.x
             dy = b.y - a.y
             d = a.distance_to(b)
-            puts "New distance: #{d}"
             
             # Unit vector in the direction of the collision
             ax = dx/d
             ay = dy/d
-            puts "Unit vector: #{ax}, #{ay}"
             
             # Project velocities along unit vector
             va1 =  a.xv * ax + a.yv * ay
@@ -46,7 +40,7 @@ module CollisionDetector
             vb2 = -b.xv * ay + b.yv * ax
             
             # New velocities
-            ed = 1.0
+            ed = 0.5
             vaP1 = va1 + (1 + ed) * (va2 - va1) / (1 + a.mass/b.mass)
             vaP2 = va2 + (1 + ed) * (va1 - va2) / (1 + b.mass/a.mass)
             
@@ -56,20 +50,16 @@ module CollisionDetector
       			b.xv = vaP2*ax - vb2*ay
       			b.yv = vaP2*ay + vb2*ax
       			
+      			#Will sez: previous three blocks are definitely redundant somehow
+      			#and this is where the "collision" happens, so should get factored out
+      			      			
       			# Move forward in time
-      			a.x += a.xv * dt
-      			a.y += a.yv * dt
-      			b.x += b.xv * dt
-      			b.y += b.yv * dt
-      			
-      			puts "Correcting positions."
-      			puts "A: (#{a.x}, #{a.y})"
-            puts "B: (#{b.x}, #{b.y})"
-            
-            puts
+            a.step!(dt)
+            b.step!(dt)      			
           end
         end
       end
+      detect_and_correct_collisions(objs) if collision_happened
     end
   end
 end
