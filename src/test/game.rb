@@ -50,7 +50,7 @@ class Game < Processing::App
         
     fill 0, 0, 128
     @wells.each do |w|
-      ellipse s_x(w.mass.x), s_y(w.mass.y), 10/@scale, 10/@scale
+      ellipse s_x(w.x), s_y(w.y), 10/@scale, 10/@scale
     end
     
     @wells.reject! {|w| w.exp < Time.now }
@@ -64,6 +64,9 @@ class Game < Processing::App
   end
   
   def mouse_pressed
+    mouse_dragged
+  end  
+  def mouse_dragged
     @wells << Well.new(i_x(mouse_x), i_y(mouse_y))
   end
   

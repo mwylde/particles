@@ -12,7 +12,7 @@ module CollisionDetector
       end while collision_happened
     end
     
-    def collided?(a, b):
+    def collided?(a, b)
       r_sum = a.radius + b.radius
       
       a_new = [a.x, a.y]
@@ -21,14 +21,14 @@ module CollisionDetector
       b_new = [b.x, b.y]
       b_old = [b.x - b.xv, b.y - b.yv]
       
-      return intersection?(a_old, a_new, b_old, b_new) 
-          || dist(a_new, b_new, b_old) < r_sum
-          || dist(a_old, b_new, b_old) < r_sum
-          || dist(b_new, a_new, a_old) < r_sum
+      return intersection?(a_old, a_new, b_old, b_new) \
+          || dist(a_new, b_new, b_old) < r_sum \
+          || dist(a_old, b_new, b_old) < r_sum \
+          || dist(b_new, a_new, a_old) < r_sum \
           || dist(b_old, a_new, a_old) < r_sum
     end
 
-    def intersection?(ao, an, bo, bn):
+    def intersection?(ao, an, bo, bn)
       denominator = (bn[1]-bo[1])*(an[0]-ao[0]) - (bn[0]-bo[0])*(an[1]-ao[1])
       
       u1=((bn[0]-bo[0])*(ao[1]-bo[1]) - (bn[1]-bo[1])*(ao[0]-bo[1]))/denominator
