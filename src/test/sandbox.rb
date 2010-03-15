@@ -1,7 +1,4 @@
-require 'mass.rb'
-require 'collision_detector.rb'
-
-class Collisions < Processing::App
+class Sandbox < Processing::App
   include CollisionDetector::Posteriori
 
   attr_accessor :comets
@@ -10,9 +7,12 @@ class Collisions < Processing::App
     smooth
     @comets = []
     @drag = nil
+    @steps_per_frame = 10
     
     [[100,100],[122,100],[144,100],[166,100],
-     [111,120],[132,120],[153,120],[122,140],[144,140],[133,160]].each do |x,y|
+          [111,120],[132,120],[153,120],
+               [122,140],[144,140],
+                    [133,160]].each do |x,y|
           @comets << Mass.new(x,y,100,:radius => 10)
         end
         #@comets << Mass.new(130, 400, 100, :radius => 10, :y_speed => -4)
@@ -44,20 +44,25 @@ class Collisions < Processing::App
     
     no_stroke
     
-    @comets.each do |p|
-      p.step!
-      if p.x <= 0 || p.x >= width
-        p.xv *= -1
-        p.x = [[1.0, p.x].max, width-1.0].min
+    @steps_per_frame.times do    
+      @comets.each do |p|
+        p.step!(1.0/@steps_per_frame)
+        
+        # Bouncing
+        if p.x <= 0 || p.x >= width
+          p.xv *= -1
+          p.x = [[1.0, p.x].max, width-1.0].min
+        end
+        if p.y <= 0 || p.y >= height
+          p.yv *= -1 
+          p.y = [[1.0, p.y].max, height-1.0].min
+        end
+        p.reduce_velocities_by(0.01 / @steps_per_frame)
       end
-      if p.y <= 0 || p.y >= height
-        p.yv *= -1 
-        p.y = [[1.0, p.y].max, height-1.0].min
-      end
-      p.reduce_velocities_by(0.01)
+      detect_and_correct_collisions(@comets)
     end
+
     
-    detect_and_correct_collisions(@comets)
     
     @comets.each do |p|
       ellipse p.x, p.y, p.radius*2, p.radius*2
@@ -88,5 +93,3 @@ class Collisions < Processing::App
   end
   
 end
-
-Collisions.new :title => "Spaced", :width => 400, :height => 400

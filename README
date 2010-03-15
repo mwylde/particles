@@ -1,1 +1,11 @@
-Physics. Mmmm.
+Critical Mass Prototype
+=======================
+
+To get started, install ruby-processing:
+    sudo gem install ruby-processing
+    
+Then, clone me and run:
+    ./run game
+    
+Or to enter the sandbox:
+    ./run sandbox

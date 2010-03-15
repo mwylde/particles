@@ -1,0 +1,2 @@
+#!/usr/bin/env ruby
+`rp5 run boot.rb #{(ARGV[0] || 'game').strip}`
