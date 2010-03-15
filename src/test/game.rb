@@ -7,9 +7,9 @@ class Game < Processing::App
   MAX_SCALE = 3
   MIN_MASS = 0
   MAX_MASS = 10000
+  STAR_DENSITY = 0.0001 #the probability that a given pixel will be a star
 
   def setup
-    puts "Setting up"
     smooth
     @comets = [Mass.new(300,300,100), Mass.new(500,500,100, :y_speed => -1)]
     @wells = []
@@ -21,12 +21,18 @@ class Game < Processing::App
     frame_rate 60
     @steps_per_frame = 2
     textFont createFont("FFScala", 16)
-    
+
+    @stars = create_starfield
     background 0
   end
   
   def draw
     no_stroke
+    
+    @stars.each{|star|
+      ellipse s_x(star[0]), s_y(star[1]), star[2]/@scale, star[2]/@scale
+      fill star[3]
+    }
     
     fill 0, 0, 0, 16
     rect 0, 0, width, height
@@ -53,6 +59,7 @@ class Game < Processing::App
       ellipse s_x(w.x), s_y(w.y), 10/@scale, 10/@scale
     end
     
+    
     @wells.reject! {|w| w.exp < Time.now }
     @comets.reject! {|p| s_x(p.x) > width + 10 || s_x(p.x) < -10 || s_y(p.y) > height + 10 || s_y(p.y) < -10 }
 
@@ -75,6 +82,16 @@ class Game < Processing::App
   end
   
   private
+  def create_starfield
+  	stars = []
+  	max_width = width * MAX_SCALE
+  	max_height = height * MAX_SCALE
+  	(max_width * max_height * STAR_DENSITY).to_i.times do |time|
+  	  #[x, y, radius, brightness]
+	    stars << [rand(max_width)-max_width/2, rand(max_height)-max_height/2, rand(3)+1, rand(50)+100]
+	  end
+	  stars
+  end
   def s_x(x)
     #this is the expanded form of the calculation, included for clarity:
     #c = width/2.0
