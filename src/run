@@ -1,2 +1,2 @@
 #!/usr/bin/env ruby
-`rp5 run boot.rb #{(ARGV[0] || 'game').strip}`
+`rp5 run #{File.dirname(__FILE__)}/boot.rb #{(ARGV[0] || 'game').strip}`

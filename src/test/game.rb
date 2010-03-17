@@ -5,9 +5,12 @@ class Game < Processing::App
   
   MIN_SCALE = 1
   MAX_SCALE = 3
+  ZOOM_STEPS = 5
   MIN_MASS = 0
   MAX_MASS = 10000
-  STAR_DENSITY = 0.0001 #the probability that a given pixel will be a star
+  STAR_DENSITY = 0.00005 #the probability that a given pixel will be a star
+  MIN_BRIGHTNESS = 100
+  MAX_BRIGHTNESS = 200
 
   def setup
     smooth
@@ -23,15 +26,16 @@ class Game < Processing::App
     textFont createFont("FFScala", 16)
 
     @stars = create_starfield
+    @current_stars = @stars
     background 0
   end
   
   def draw
     no_stroke
     
-    @stars.each{|star|
-      ellipse s_x(star[0]), s_y(star[1]), star[2]/@scale, star[2]/@scale
+    @current_stars.each{|star|
       fill star[3]
+      ellipse s_x(star[0]), s_y(star[1]), star[2]/@scale, star[2]/@scale
     }
     
     fill 0, 0, 0, 16
@@ -65,8 +69,14 @@ class Game < Processing::App
 
     @total_mass = find_total_mass
     @new_scale = find_scale
+    fill 255, 255, 255
+    text @new_scale.to_s, 50, 50
     if (@new_scale - @scale).abs > 0.001
-      @scale += 0.001 * (@new_scale-@scale)/(@new_scale-@scale).abs
+      @scale += 0.005 * (@new_scale-@scale)/(@new_scale-@scale).abs
+      scale_p = (@scale-MIN_SCALE)/(MAX_SCALE-MIN_SCALE)
+      @current_stars = @stars.reject{|star|
+        (star[3].to_f-MIN_BRIGHTNESS)/(MAX_BRIGHTNESS-MIN_BRIGHTNESS) < scale_p
+      }
     end
   end
   
@@ -88,7 +98,12 @@ class Game < Processing::App
   	max_height = height * MAX_SCALE
   	(max_width * max_height * STAR_DENSITY).to_i.times do |time|
   	  #[x, y, radius, brightness]
-	    stars << [rand(max_width)-max_width/2, rand(max_height)-max_height/2, rand(3)+1, rand(50)+100]
+	    stars << [
+	      rand(max_width)-max_width/2, 
+	      rand(max_height)-max_height/2, 
+	      rand(3)+1, 
+	      rand(MAX_BRIGHTNESS-MIN_BRIGHTNESS)+MIN_BRIGHTNESS
+	    ]
 	  end
 	  stars
   end
@@ -123,6 +138,11 @@ class Game < Processing::App
     mass = MIN_MASS if @total_mass < MIN_MASS
     mass = MAX_MASS if @total_mass > MAX_MASS
     
-    (mass.to_f-MIN_MASS)/(MAX_MASS-MIN_MASS) * (MAX_SCALE-MIN_SCALE) + MIN_SCALE
+    scale = (mass.to_f-MIN_MASS)/(MAX_MASS-MIN_MASS) * (MAX_SCALE-MIN_SCALE) + MIN_SCALE
+    bin_size = (MAX_SCALE-MIN_SCALE)/(ZOOM_STEPS-1.0)
+    MIN_SCALE.step(MAX_SCALE, bin_size){|bin|
+      return bin if bin + bin_size >= scale
+    }
+    return MAX_SCALE
   end
 end
